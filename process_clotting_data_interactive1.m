@@ -151,7 +151,8 @@ close all
         
         % Plotting
         figure(1)
-         set(gcf, 'Name', ['Figure 1 (' sheets{sheet_index} ')'], 'NumberTitle', 'off');
+        set(gcf, 'Name', ['Figure 1 (' sheets{sheet_index} ')'], 'NumberTitle', 'off', ...
+            'Position', [100, 100, 1200, 800]);
 for i = 1:num_groups
     subplot(num_rows, num_cols, i)
     hold on
@@ -182,7 +183,7 @@ for i = 1:num_groups
     % Label axes and set the title
     xlabel('Time (m)','FontSize',17)
     ylabel('Absorbance','FontSize',17)
-    title(selected_groups{i},'FontSize',18)
+    title(selected_groups{i},'FontSize',14)
     
     % Set axis limits
     xlim([min(t), x_max]);
@@ -198,13 +199,14 @@ end
 
         % Combined plot
         figure(2)
-        set(gcf, 'Position', [100, 100, 800, 800]);
+        set(gcf, 'Position', [100, 100, 1200, 1000]);
         h1= subplot(2, 1, 1);
         set(h1, 'Position', [0.1, 0.65, 0.8, 0.30]);
         hold on
         for i = 1:num_groups
             plot(t, means(:, i), '-', 'Color', dark_colors{i}, 'LineWidth', 1.5)
         end
+        legend(selected_groups, 'Location', 'best', 'FontSize', 14)
         xlabel('Time (m)')
         ylabel('Absorbance')
         title(sheets{sheet_index}, 'FontSize',20)
