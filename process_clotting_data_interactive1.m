@@ -83,6 +83,10 @@ close all
             groups{i} = group_data;
         end
 
+        % Determine number of groups for color assignment
+        num_groups = numel(selected_groups);
+        cmap = lines(num_groups);  % Base colormap for fallback colors
+
         % Define a color map with distinct, bright, and color-blind friendly colors
         group_colors = containers.Map();
 
@@ -125,27 +129,23 @@ close all
         group_dark_colors('PPP Heparin Hybrid') = [77, 175, 74] / 255;  % Bright Green
         group_dark_colors('PRP Citrate Hybrid') = [154, 1, 205] / 255;  % Dark Magenta
 
-        % Default color for unknown groups
-        default_fill_color = [128, 128, 128] / 255;  % Medium Gray
-        default_line_color = [64, 64, 64] / 255;  % Dark Gray
-
         % Assign colors to selected groups
-        colors = cell(numel(selected_groups), 1);
-        dark_colors = cell(numel(selected_groups), 1);
+        colors = cell(num_groups, 1);
+        dark_colors = cell(num_groups, 1);
 
-        for i = 1:numel(selected_groups)
+        for i = 1:num_groups
             group_name = selected_groups{i};
             if isKey(group_colors, group_name)
                 colors{i} = group_colors(group_name);
                 dark_colors{i} = group_dark_colors(group_name);
             else
-                colors{i} = default_fill_color; % Default fill color
-                dark_colors{i} = default_line_color; % Default line color
+                % Use distinct colors from the colormap for unknown groups
+                dark_colors{i} = cmap(i, :);
+                colors{i} = 0.5 * cmap(i, :) + 0.5;  % Lighter fill color
             end
         end
 
         % Determine subplot layout based on number of selected groups
-        num_groups = numel(selected_groups);
         num_cols = ceil(sqrt(num_groups));
         num_rows = ceil(num_groups / num_cols);
         
@@ -182,7 +182,7 @@ for i = 1:num_groups
     % Label axes and set the title
     xlabel('Time (m)','FontSize',17)
     ylabel('Absorbance','FontSize',17)
-    title([selected_groups{i}],'fontsize',25)
+    title(selected_groups{i},'FontSize',18)
     
     % Set axis limits
     xlim([min(t), x_max]);
@@ -207,7 +207,7 @@ end
         end
         xlabel('Time (m)')
         ylabel('Absorbance')
-        title([ sheets{sheet_index}], "fontsize",25)
+        title(sheets{sheet_index}, 'FontSize',20)
         % Determine the maximum x-limit based on the first NaN or empty value in data
             xlim([min(t), x_max]);
         ylim([0, 1.35]);
